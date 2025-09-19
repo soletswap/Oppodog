@@ -9,6 +9,7 @@ window.addEventListener("load", function () {
       initialInputMint: "So11111111111111111111111111111111111111112", // SOL
       initialOutputMint: "HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz", // OPPO
       referralAccount: "9EvV3V9cZ4KktQ4xCnu3ymA2a9qgaBR4HLFhFddZZXSn",
+      referralFee: 100, // bps (1.00%) — allowed range: 50–255
     },
     branding: {
       logoUri:
