@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Oppodog</title>
+    <!-- Grafik stilleri -->
+    <link rel="stylesheet" href="./grafik/chart.css" />
+  </head>
+  <body>
+    <!-- JUPITER WIDGET (orijinal embed; değiştirmeyin) -->
+    <div id="jupiter-terminal"></div>
+    <script src="https://terminal.jup.ag/main-v2.js"></script>
+    <script>
+      window.Jupiter.init({
+        displayMode: "integrated",
+        container: "#jupiter-terminal"
+        // Not: Jupiter widget kodunu değiştirmeyin. Gerekirse kendi
+        // endpoint veya formProps değerlerinizi burada ekleyebilirsiniz.
+      });
+    </script>
+
+    <!-- DexScreener grafiği (Jupiter seçimlerine göre otomatik güncellenir) -->
+    <section id="dex-chart" class="chart-shell">
+      <div class="chart-placeholder">Grafik yükleniyor…</div>
+    </section>
+
+    <!-- Grafik mantığı (Jupiter’a dokunmadan, postMessage ile dinler) -->
+    <script src="./grafik/chart.js"></script>
+    <!-- Projenizin genel JS’i (isteğe bağlı) -->
+    <script src="./main.js"></script>
+  </body>
+</html>
