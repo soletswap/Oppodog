@@ -20,6 +20,8 @@
   margin-top: 0;
   position: relative; /* z-index için gerekli */
   z-index: 1;
+  /* ÖNEMLİ: Yükseklik tanımlıyoruz ki iframe'in %100'ü hesaplanabilsin */
+  height: clamp(360px, 62vh, 720px);
   min-height: 280px;
   box-sizing: border-box;
 }
