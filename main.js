@@ -18,34 +18,27 @@ window.addEventListener("load", function () {
     },
   });
 
-  // Hızlı bağlantıları widget içine taşı ve etkinleştir
-  const target = document.getElementById("target-container");
+  // CA kopyalama ve kısaltma
   const bar = document.getElementById("token-links");
-  if (target && bar) {
-    target.appendChild(bar);
-    bar.hidden = false;
-
-    // CA kopyalama ve kısa gösterim
-    const caBtn = bar.querySelector(".chip.ca");
-    if (caBtn) {
-      const ca = caBtn.getAttribute("data-ca") || "";
-      if (ca && ca.length > 12) {
-        caBtn.textContent = `CA: ${ca.slice(0, 4)}…${ca.slice(-4)}`;
-      }
-      caBtn.addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(ca);
-          caBtn.classList.add("copied");
-          const prev = caBtn.textContent;
-          caBtn.textContent = "Copied!";
-          setTimeout(() => {
-            caBtn.textContent = prev;
-            caBtn.classList.remove("copied");
-          }, 1200);
-        } catch (e) {
-          // Sessiz geç
-        }
-      });
+  const caBtn = bar?.querySelector(".chip.ca");
+  if (caBtn) {
+    const ca = caBtn.getAttribute("data-ca") || "";
+    if (ca && ca.length > 12) {
+      caBtn.textContent = `CA: ${ca.slice(0, 4)}…${ca.slice(-4)}`;
     }
+    caBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(ca);
+        caBtn.classList.add("copied");
+        const prev = caBtn.textContent;
+        caBtn.textContent = "Copied!";
+        setTimeout(() => {
+          caBtn.textContent = prev || `CA: ${ca.slice(0, 4)}…${ca.slice(-4)}`;
+          caBtn.classList.remove("copied");
+        }, 1200);
+      } catch (_) {
+        // sessiz geç
+      }
+    });
   }
 });
