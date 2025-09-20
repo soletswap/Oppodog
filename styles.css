@@ -19,9 +19,7 @@ html, body {
   min-height: 100%;
   height: 100%;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-
-  /* Yatay kaymayı engelle */
-  overflow-x: hidden;
+  overflow-x: hidden; /* yatay kaymayı engelle */
 }
 
 .wrap {
@@ -46,10 +44,44 @@ html, body {
 /* Widget: genişlik %100, yükseklik ekran yüksekliğine göre */
 #target-container {
   width: 100%;
-  /* Görünür ve rahat kullanım için dinamik yükseklik */
   height: clamp(560px, calc(100dvh - 2 * var(--page-padding)), 720px);
-  /* İsteğe bağlı görsel düzenlemeler:
+}
+
+/* Mobil bağlantı yardım kutusu */
+.wallet-help {
+  margin-top: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  */
+  padding: 12px;
+  color: rgb(var(--jupiter-plugin-primary-text));
+  text-align: center;
+}
+
+.wallet-links {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 8px 0 4px;
+}
+
+.wallet-btn {
+  display: inline-block;
+  padding: 10px 14px;
+  background: rgb(var(--jupiter-plugin-interactive));
+  color: rgb(var(--jupiter-plugin-primary-text));
+  text-decoration: none;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.wallet-btn:hover {
+  filter: brightness(1.05);
+}
+
+.wallet-note {
+  margin: 4px 0 0;
+  opacity: 0.8;
+  font-size: 12px;
 }
