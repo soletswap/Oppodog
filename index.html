@@ -10,6 +10,14 @@
   <body>
     <div class="wrap">
       <div class="container">
+        <!-- Cüzdan bağlama paneli -->
+        <div class="connect-panel" id="connect-panel" aria-live="polite">
+          <p class="connect-title">Cüzdana bağlan</p>
+          <div class="connect-buttons" id="connect-buttons"></div>
+          <p class="connect-hint">Masaüstünde bir Solana cüzdan uzantınız varsa burada görünecektir.</p>
+        </div>
+
+        <!-- Widget kapsayıcı -->
         <div id="target-container"></div>
 
         <!-- Mobil yardım: Cüzdan uygulamasının iç tarayıcısında aç -->
@@ -23,28 +31,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Deep linkleri ve görünürlüğü ayarla -->
-    <script>
-      (function () {
-        // Derin linkler: Mevcut sayfa adresini cüzdan tarayıcılarına ilet
-        const current = encodeURIComponent(window.location.href);
-        const phantom = document.getElementById('open-phantom');
-        const solflare = document.getElementById('open-solflare');
-        if (phantom) phantom.href = 'phantom://browse/' + current;
-        if (solflare) solflare.href = 'solflare://browser?url=' + current;
-
-        // Cüzdan sağlayıcısı varsa yardım kutusunu gizle (masaüstünde ya da cüzdan iç tarayıcısında)
-        const hasProvider =
-          typeof window.solana !== 'undefined' ||
-          typeof window.backpack !== 'undefined' ||
-          (window.wallets && Array.isArray(window.wallets) && window.wallets.length > 0);
-        const help = document.getElementById('wallet-help');
-        if (help && hasProvider) {
-          help.style.display = 'none';
-        }
-      })();
-    </script>
 
     <script src="./main.js"></script>
   </body>
