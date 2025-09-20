@@ -4,14 +4,22 @@
   --muted: rgba(255, 255, 255, 0.6);
 }
 
+/* Widget her zaman grafiğin üst katmanında kalsın */
+#jupiter-terminal {
+  position: relative;
+  z-index: 2;
+}
+
 .chart-shell {
   width: 100%;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
-  margin-top: 16px;
-  position: relative;
+  /* Altına yapışık görünüm için boşluğu kaldırdık */
+  margin-top: 0;
+  position: relative; /* z-index için gerekli */
+  z-index: 1;
   min-height: 280px;
   box-sizing: border-box;
 }
