@@ -7,6 +7,8 @@
 
     <!-- Jupiter Plugin CSS variables -->
     <link rel="stylesheet" href="./styles.css" />
+    <!-- Dexscreener chart styles -->
+    <link rel="stylesheet" href="./grafik/chart.css" />
 
     <!-- Jupiter Plugin script -->
     <script src="https://plugin.jup.ag/plugin-v1.js"></script>
@@ -15,8 +17,15 @@
     <div class="wrap">
       <!-- Target container for the plugin -->
       <div id="target-container" style="width: 400px; height: 568px;"></div>
+
+      <!-- Dexscreener chart container -->
+      <section id="dex-chart" class="chart-shell">
+        <div class="chart-placeholder">Grafik yükleniyor…</div>
+      </section>
     </div>
 
+    <!-- Dexscreener integration script -->
+    <script src="./grafik/chart.js"></script>
     <!-- Initialization code -->
     <script src="./main.js"></script>
   </body>
