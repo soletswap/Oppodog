@@ -2,16 +2,14 @@
   --jupiter-plugin-primary: 124, 163, 61;
   --jupiter-plugin-background: 7, 5, 5;
   --jupiter-plugin-primary-text: 232, 249, 255;
-  --jupiter-plugin-warning: 176, 103, 7;
   --jupiter-plugin-interactive: 20, 38, 58;
   --jupiter-plugin-module: 16, 24, 33;
 
-  /* Responsive ayarlar */
   --widget-max-width: 420px;
   --page-padding: 16px;
 
-  /* Powered by Jupiter üstünde konum için alt offset */
-  --powered-offset: 88px; /* gerekirse 80–96px arası deneyebilirsin */
+  /* Powered by Jupiter’ın ÜSTÜNE gelecek offset */
+  --powered-offset: 92px; /* ihtiyaca göre 84–100 arası deneyebilirsin */
 }
 
 html, body {
@@ -36,20 +34,17 @@ html, body {
   padding-bottom: calc(var(--page-padding) + env(safe-area-inset-bottom, 0px));
 }
 
-/* Ortalanmış ve ekrana göre genişleyen kap */
 .container {
   width: min(100%, var(--widget-max-width));
   margin: 0 auto;
 }
 
-/* Widget kabuğu: boyut ve overlay konumlandırma burada */
 .widget-shell {
   position: relative;
   width: 100%;
   height: clamp(560px, calc(100dvh - 2 * var(--page-padding)), 720px);
 }
 
-/* Jupiter plugin hedefi kabuğu doldursun */
 #target-container {
   position: absolute;
   inset: 0;
@@ -57,35 +52,22 @@ html, body {
   height: 100%;
 }
 
-/* Hızlı bağlantılar çubuğu - Powered by Jupiter'ın hemen üstü, TEK SATIR */
+/* Link bar: üst satır linkler, alt satır CA */
 .token-links {
   position: absolute;
   left: 12px;
   right: 12px;
   bottom: calc(var(--powered-offset) + env(safe-area-inset-bottom, 0px));
   display: flex;
-  align-items: center;
-  justify-content: flex-start; /* ilk ögeler görünür kalsın */
-  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 8px;
+  row-gap: 8px;
 
-  /* Tek satır ve yatay kaydırma */
-  white-space: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 0 6px;
-
-  /* iFrame üstünde görünmesi için */
-  z-index: 2147483647;
-
-  /* Altındaki etkileşimleri engellemesin */
-  pointer-events: none;
-
-  /* Scrollbar'ı gizle */
-  scrollbar-width: none;
+  z-index: 2147483647;   /* iFrame üstünde */
+  pointer-events: none;  /* alt öğeleri engelleme */
 }
-.token-links::-webkit-scrollbar { display: none; }
 
-/* Chip stilleri */
 .token-links .chip {
   pointer-events: auto;
   display: inline-flex;
@@ -102,6 +84,21 @@ html, body {
   text-decoration: none;
   cursor: pointer;
   transition: background .2s ease, border-color .2s ease, transform .05s ease;
+  white-space: nowrap;
+}
+
+/* CA chip: alt satıra geçsin ve ortalansın */
+.token-links .chip.ca {
+  order: 2;                /* altta */
+  flex: 0 0 100%;          /* tam satır */
+  justify-content: center; /* ortala */
+  font-size: 12.8px;       /* mobilde sığması için hafif küçük */
+  padding: 7px 12px;
+  border-color: rgba(var(--jupiter-plugin-primary), 0.75);
+}
+
+.token-links .chip:not(.ca) {
+  order: 1; /* üst satır */
 }
 
 .token-links .chip:hover {
@@ -113,17 +110,14 @@ html, body {
   transform: translateY(1px);
 }
 
-/* CA chip vurgusu */
-.token-links .chip.ca {
-  border-color: rgba(var(--jupiter-plugin-primary), 0.75);
-}
-
 .token-links .chip.ca.copied {
   background: rgba(var(--jupiter-plugin-primary), 0.25);
   border-color: rgba(var(--jupiter-plugin-primary), 0.95);
 }
 
-/* Çok dar ekranlarda hafifçe daha yukarı */
+/* Çok dar ekranlarda biraz daha yukarı al */
 @media (max-width: 380px) {
-  :root { --powered-offset: 94px; }
+  :root { --powered-offset: 98px; }
+  .token-links .chip { font-size: 13px; }
+  .token-links .chip.ca { font-size: 12.4px; }
 }
