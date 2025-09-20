@@ -11,8 +11,41 @@
     <div class="wrap">
       <div class="container">
         <div id="target-container"></div>
+
+        <!-- Mobil yardım: Cüzdan uygulamasının iç tarayıcısında aç -->
+        <div class="wallet-help" id="wallet-help" aria-live="polite">
+          <p>Mobilde bağlanmak için siteyi cüzdan uygulamanızın içindeki tarayıcıda açın:</p>
+          <div class="wallet-links">
+            <a id="open-phantom" class="wallet-btn">Phantom’da Aç</a>
+            <a id="open-solflare" class="wallet-btn">Solflare’da Aç</a>
+          </div>
+          <p class="wallet-note">Not: Masaüstünde bir cüzdan uzantısı (Phantom, Solflare, Backpack, Glow, Exodus) yüklüyse bu mesaj otomatik gizlenir.</p>
+        </div>
       </div>
     </div>
+
+    <!-- Deep linkleri ve görünürlüğü ayarla -->
+    <script>
+      (function () {
+        // Derin linkler: Mevcut sayfa adresini cüzdan tarayıcılarına ilet
+        const current = encodeURIComponent(window.location.href);
+        const phantom = document.getElementById('open-phantom');
+        const solflare = document.getElementById('open-solflare');
+        if (phantom) phantom.href = 'phantom://browse/' + current;
+        if (solflare) solflare.href = 'solflare://browser?url=' + current;
+
+        // Cüzdan sağlayıcısı varsa yardım kutusunu gizle (masaüstünde ya da cüzdan iç tarayıcısında)
+        const hasProvider =
+          typeof window.solana !== 'undefined' ||
+          typeof window.backpack !== 'undefined' ||
+          (window.wallets && Array.isArray(window.wallets) && window.wallets.length > 0);
+        const help = document.getElementById('wallet-help');
+        if (help && hasProvider) {
+          help.style.display = 'none';
+        }
+      })();
+    </script>
+
     <script src="./main.js"></script>
   </body>
 </html>
