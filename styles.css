@@ -47,9 +47,52 @@ html, body {
   height: clamp(560px, calc(100dvh - 2 * var(--page-padding)), 720px);
 }
 
+/* Bağlantı paneli */
+.connect-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.connect-title {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.connect-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.connect-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgb(var(--jupiter-plugin-interactive));
+  color: rgb(var(--jupiter-plugin-primary-text));
+  text-decoration: none;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.connect-btn:hover {
+  filter: brightness(1.05);
+}
+
+.connect-hint {
+  margin: 8px 0 0;
+  opacity: 0.8;
+  font-size: 12px;
+}
+
 /* Mobil bağlantı yardım kutusu */
 .wallet-help {
-  margin-top: 16px;
+  margin-top: 12px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
