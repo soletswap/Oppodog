@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Oppo Swap</title>
 
-    <!-- Jupiter Plugin CSS variables -->
     <link rel="stylesheet" href="./styles.css" />
-
-    <!-- Jupiter Plugin script -->
+    <link rel="stylesheet" href="./grafik/chart.css" />
     <script src="https://plugin.jup.ag/plugin-v1.js"></script>
   </head>
   <body>
     <div class="wrap">
-      <!-- Target container for the plugin -->
       <div id="target-container" style="width: 400px; height: 568px;"></div>
+      <section id="dex-chart" class="chart-shell" data-token-query="HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz" aria-label="Dexscreener grafiği">
+        <div class="chart-placeholder" role="status" aria-live="polite">Grafik yükleniyor...</div>
+      </section>
     </div>
 
-    <!-- Initialization code -->
     <script src="./main.js"></script>
+    <script src="./grafik/chart.js"></script>
   </body>
 </html>
