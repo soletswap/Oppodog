@@ -19,8 +19,6 @@ html, body {
   min-height: 100%;
   height: 100%;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-
-  /* Yatay kaymayı engelle */
   overflow-x: hidden;
 }
 
@@ -52,4 +50,65 @@ html, body {
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.02);
   */
+  position: relative; /* Link çubuğunu içeride konumlandırabilmek için */
+}
+
+/* Hızlı bağlantılar çubuğu */
+.token-links {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  /* Jupiter içi "Powered by Jupiter" yazısının biraz üstünde dursun diye:
+     alt boşluğu güvenli alanla birlikte ayarladık. */
+  bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none; /* Alt elemanları engellemesin */
+}
+
+/* Chip stilleri */
+.token-links .chip {
+  pointer-events: auto; /* Link ve butonlar tıklanabilir kalsın */
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid rgba(var(--jupiter-plugin-primary), 0.45);
+  background: rgba(var(--jupiter-plugin-module), 0.85);
+  color: rgb(var(--jupiter-plugin-primary-text));
+  border-radius: 9999px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .05s ease;
+  white-space: nowrap;
+}
+
+.token-links .chip:hover {
+  background: rgba(var(--jupiter-plugin-interactive), 0.9);
+  border-color: rgba(var(--jupiter-plugin-primary), 0.8);
+}
+
+.token-links .chip:active {
+  transform: translateY(1px);
+}
+
+/* CA chip vurgusu */
+.token-links .chip.ca {
+  border-color: rgba(var(--jupiter-plugin-primary), 0.75);
+}
+
+.token-links .chip.ca.copied {
+  background: rgba(var(--jupiter-plugin-primary), 0.25);
+  border-color: rgba(var(--jupiter-plugin-primary), 0.95);
+}
+
+/* Küçük ekranlarda alt boşluğu biraz artır */
+@media (max-width: 380px) {
+  .token-links {
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  }
 }
