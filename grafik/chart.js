@@ -4,6 +4,7 @@
   const CONTAINER_ID = 'dex-chart';
   const BASE = 'https://dexscreener.com';
   const CHAIN = 'solana';
+  const API = 'https://api.dexscreener.com/latest/dex/tokens/';
   const EMBED_QUERY = 'embed=1&theme=dark&trades=0&info=0&interval=15';
   const SOL_MINT = 'So11111111111111111111111111111111111111112';
   const DEFAULT_MINT = 'HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz'; // OPPO
@@ -37,33 +38,111 @@
     mount.appendChild(el);
   }
 
-  function buildCandidateUrls(mint) {
-    return [
+  // DexScreener API’den mint’e ait en iyi pair’i çözüp URL önceliğine ekler.
+  async function resolveCandidateUrls(mint) {
+    // Varsayılan denenecek yollar
+    const urls = [
       `${BASE}/${CHAIN}/tokens/${mint}?${EMBED_QUERY}`,
       `${BASE}/${CHAIN}/${mint}?${EMBED_QUERY}`,
+      `${BASE}/${CHAIN}?${EMBED_QUERY}&q=${encodeURIComponent(mint)}`, // en sonda arama sayfası
     ];
+
+    try {
+      const ac = new AbortController();
+      const timeout = setTimeout(() => ac.abort(), 1800);
+      const resp = await fetch(`${API}${mint}`, { signal: ac.signal, cache: 'no-store' });
+      clearTimeout(timeout);
+
+      if (resp.ok) {
+        const data = await resp.json();
+        const pairs = Array.isArray(data?.pairs) ? data.pairs : [];
+
+        if (pairs.length) {
+          // En iyi pair’i seç: yüksek likidite, yüksek 24h hacim ve USDC/USDT önceliği
+          const scored = pairs
+            .map(p => {
+              const liq = Number(p?.liquidity?.usd || 0);
+              const vol = Number(p?.volume?.h24 || 0);
+              const quote = String(p?.quoteToken?.symbol || '').toUpperCase();
+              const isStable = quote === 'USDC' || quote === 'USDT';
+              const baseMatch = String(p?.baseToken?.address || '') === mint;
+              // Skor: likidite ağırlıklı + hacim, stable ve baseMatch bonus
+              const score = liq * 10 + vol + (isStable ? 5_000 : 0) + (baseMatch ? 2_500 : 0);
+              const pairAddress =
+                p?.pairAddress ||
+                p?.pairId ||
+                (typeof p?.url === 'string' ? p.url.split('/').pop() : '');
+              return { score, pairAddress };
+            })
+            .filter(x => !!x.pairAddress)
+            .sort((a, b) => b.score - a.score);
+
+          if (scored.length) {
+            const pairAddress = scored[0].pairAddress;
+            // Pair sayfasını en üste al
+            urls.unshift(`${BASE}/${CHAIN}/${pairAddress}?${EMBED_QUERY}`);
+          }
+        }
+      }
+    } catch {
+      // Sessiz geç (zaman aşımı veya ağ hatası)
+    }
+
+    // Aynı URL’in iki kez eklenmiş olmasını önle
+    const seen = new Set();
+    return urls.filter(u => {
+      if (seen.has(u)) return false;
+      seen.add(u);
+      return true;
+    });
   }
 
   function setIframeSrcWithFallback(iframe, urls, onSuccess, onExhausted) {
     let idx = 0;
-    let triedAtLeastOne = false;
+    let loaded = false;
 
     function tryNext() {
+      if (loaded) return;
       if (idx >= urls.length) {
-        if (triedAtLeastOne) onExhausted?.();
+        onExhausted?.();
         return;
       }
       iframe.src = urls[idx++];
-      triedAtLeastOne = true;
     }
 
-    iframe.addEventListener('load', () => onSuccess?.());
-    iframe.addEventListener('error', () => tryNext());
+    iframe.addEventListener('load', () => {
+      if (loaded) return;
+      // DexScreener 404 bile olsa "load" tetiklenir; bu yüzden ilk URL başarısız olursa
+      // genellikle API ile eklediğimiz pair URL’i doğru çalışacağından burada başarılı sayıyoruz.
+      loaded = true;
+      onSuccess?.();
+    });
+
+    iframe.addEventListener('error', () => {
+      // Nadir de olsa hata event’i olursa sıradaki URL’e geç
+      tryNext();
+    });
 
     tryNext();
+
+    // Çok uzun sürerse sıradaki URL’lere geç (güvenlik ağı)
+    const softTmo = setTimeout(() => {
+      if (!loaded) tryNext();
+    }, 1800);
+
+    const hardTmo = setTimeout(() => {
+      if (!loaded) onExhausted?.();
+      clearTimeout(softTmo);
+    }, 4000);
+
+    // Başarılı olduğumuzda zamanlayıcıları temizle
+    iframe.addEventListener('load', () => {
+      clearTimeout(softTmo);
+      clearTimeout(hardTmo);
+    });
   }
 
-  function setMint(mint) {
+  async function setMint(mint) {
     const mount = ensureMount();
     if (!mount) return;
 
@@ -87,7 +166,6 @@
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
 
     let loaded = false;
-    const urls = buildCandidateUrls(mint);
 
     const finishSuccess = () => {
       if (loaded) return;
@@ -103,9 +181,9 @@
         <div style="text-align:center; padding: 12px;">
           <div style="margin-bottom: 8px;">Grafik yüklenemedi.</div>
           <div style="font-family: monospace; font-size: 12px; opacity: .8; margin-bottom: 12px;">${mint}</div>
-          <a href="${BASE}/${CHAIN}/${mint}" target="_blank" rel="noopener"
+          <a href="${BASE}/${CHAIN}?q=${encodeURIComponent(mint)}" target="_blank" rel="noopener"
              style="color: #8ab4ff; text-decoration: none; border: 1px solid rgba(255,255,255,.2); padding: 6px 10px; border-radius: 6px; display: inline-block;">
-            DexScreener’da görüntüle →
+            DexScreener’da ara →
           </a>
         </div>
       `;
@@ -114,30 +192,25 @@
       showTokenInfo(mount, mint);
     };
 
-    setIframeSrcWithFallback(iframe, urls, finishSuccess, finishFail);
+    // URL’leri API’den (varsa pair) çözüp sırayla dene
+    resolveCandidateUrls(mint).then((urls) => {
+      setIframeSrcWithFallback(iframe, urls, finishSuccess, finishFail);
+    }).catch(() => finishFail());
+
     mount.appendChild(iframe);
     iframeEl = iframe;
 
-    const timeoutId = setTimeout(() => {
-      if (!loaded) finishFail();
-    }, 3000);
-
+    // Son savunma: 5 sn sonra hâlâ yüklenmediyse hata göster
     setTimeout(() => {
-      if (loaded) return;
-      try {
-        void iframe.contentWindow?.document;
-      } catch {
-        finishFail();
-      } finally {
-        clearTimeout(timeoutId);
-      }
-    }, 1500);
+      if (!loaded) finishFail();
+    }, 5000);
   }
 
   function getMint() {
     return currentMint;
   }
 
+  // Jupiter widget’tan mint değişimlerini dinle
   window.addEventListener('message', (event) => {
     try {
       if (typeof event.origin !== 'string' || !event.origin.includes('jup.ag')) return;
