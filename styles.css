@@ -10,8 +10,8 @@
   --widget-max-width: 420px;
   --page-padding: 16px;
 
-  /* Powered yazısının üstünde konum için alt offset (px) */
-  --powered-offset: 64px;
+  /* Powered by Jupiter üstünde konum için alt offset */
+  --powered-offset: 88px; /* gerekirse 80–96px arası deneyebilirsin */
 }
 
 html, body {
@@ -57,40 +57,51 @@ html, body {
   height: 100%;
 }
 
-/* Hızlı bağlantılar çubuğu - Powered by Jupiter'ın hemen üstü */
+/* Hızlı bağlantılar çubuğu - Powered by Jupiter'ın hemen üstü, TEK SATIR */
 .token-links {
   position: absolute;
   left: 12px;
   right: 12px;
   bottom: calc(var(--powered-offset) + env(safe-area-inset-bottom, 0px));
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start; /* ilk ögeler görünür kalsın */
+  gap: 6px;
 
-  /* iFrame üstüne gelsin */
+  /* Tek satır ve yatay kaydırma */
+  white-space: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 6px;
+
+  /* iFrame üstünde görünmesi için */
   z-index: 2147483647;
 
-  /* Altındaki etkileşimleri engelleme */
+  /* Altındaki etkileşimleri engellemesin */
   pointer-events: none;
+
+  /* Scrollbar'ı gizle */
+  scrollbar-width: none;
 }
+.token-links::-webkit-scrollbar { display: none; }
 
 /* Chip stilleri */
 .token-links .chip {
   pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
   appearance: none;
   -webkit-appearance: none;
   border: 1px solid rgba(var(--jupiter-plugin-primary), 0.45);
   background: rgba(var(--jupiter-plugin-module), 0.85);
   color: rgb(var(--jupiter-plugin-primary-text));
   border-radius: 9999px;
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 7px 10px;
+  font-size: 13.5px;
   line-height: 1;
   text-decoration: none;
   cursor: pointer;
   transition: background .2s ease, border-color .2s ease, transform .05s ease;
-  white-space: nowrap;
 }
 
 .token-links .chip:hover {
@@ -112,8 +123,7 @@ html, body {
   border-color: rgba(var(--jupiter-plugin-primary), 0.95);
 }
 
-/* Küçük ekranlarda biraz daha kompakt */
+/* Çok dar ekranlarda hafifçe daha yukarı */
 @media (max-width: 380px) {
-  :root { --powered-offset: 72px; }
-  .token-links .chip { font-size: 13px; padding: 7px 10px; }
+  :root { --powered-offset: 94px; }
 }
