@@ -15,7 +15,9 @@ window.addEventListener("load", function () {
 
   function pickMintFromState(anyState) {
     if (!anyState) return "";
-    const candidates = [
+    
+    // Look for both input and output tokens, prioritizing the one that's not SOL
+    const outputCandidates = [
       anyState.outputMint,
       anyState.outMint,
       anyState.destinationMint,
@@ -25,8 +27,39 @@ window.addEventListener("load", function () {
       anyState?.state?.outputMint,
       anyState?.state?.formValues?.outputMint,
     ].filter(Boolean);
-    const str = String(candidates[0] || "");
-    return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(str) ? str : "";
+    
+    const inputCandidates = [
+      anyState.inputMint,
+      anyState.inMint,
+      anyState.sourceMint,
+      anyState.fromMint,
+      anyState?.formValues?.inputMint,
+      anyState?.form?.inputMint,
+      anyState?.state?.inputMint,
+      anyState?.state?.formValues?.inputMint,
+    ].filter(Boolean);
+    
+    // Combine all candidates, filter out SOL (as it's usually the base pair)
+    const allCandidates = [...outputCandidates, ...inputCandidates];
+    const solMint = "So11111111111111111111111111111111111111112";
+    
+    // First try to find a non-SOL token
+    for (const candidate of allCandidates) {
+      const str = String(candidate || "");
+      if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(str) && str !== solMint) {
+        return str;
+      }
+    }
+    
+    // If all tokens are SOL or invalid, return the first valid one
+    for (const candidate of allCandidates) {
+      const str = String(candidate || "");
+      if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(str)) {
+        return str;
+      }
+    }
+    
+    return "";
   }
 
   function attachJupiterListeners(api) {
