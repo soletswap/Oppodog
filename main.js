@@ -17,4 +17,22 @@ window.addEventListener("load", function () {
       name: "Oppo",
     },
   });
+
+  // Başlangıçta seçili output mint için grafiği yükle
+  try {
+    const initialMint =
+      "HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz"; // OPPO
+    if (window.OppoChart && typeof window.OppoChart.setMint === "function") {
+      window.OppoChart.setMint(initialMint);
+    }
+  } catch {
+    // yut
+  }
+
+  // Eğer ileride Jupiter Plugin form güncelleme event'ine erişim sağlanırsa,
+  // aşağıdaki gibi bir çağrı yeterli olacaktır:
+  //
+  // jupiter.on("form:change", (form) => {
+  //   if (form?.outputMint) window.OppoChart.setMint(form.outputMint);
+  // });
 });
