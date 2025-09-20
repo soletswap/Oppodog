@@ -7,8 +7,11 @@
   --jupiter-plugin-module: 16, 24, 33;
 
   /* Responsive ayarlar */
-  --widget-max-width: 420px; /* Masaüstünde maksimum genişlik */
-  --page-padding: 16px;      /* Kenar boşluğu */
+  --widget-max-width: 420px;
+  --page-padding: 16px;
+
+  /* Powered yazısının üstünde konum için alt offset (px) */
+  --powered-offset: 64px;
 }
 
 html, body {
@@ -23,12 +26,10 @@ html, body {
 }
 
 .wrap {
-  min-height: 100dvh; /* mobil tarayıcı çubuğuna duyarlı */
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   box-sizing: border-box;
-
-  /* Güvenli alan + sayfa padding */
   padding-left: calc(var(--page-padding) + env(safe-area-inset-left, 0px));
   padding-right: calc(var(--page-padding) + env(safe-area-inset-right, 0px));
   padding-top: calc(var(--page-padding) + env(safe-area-inset-top, 0px));
@@ -41,37 +42,42 @@ html, body {
   margin: 0 auto;
 }
 
-/* Widget: genişlik %100, yükseklik ekran yüksekliğine göre */
-#target-container {
+/* Widget kabuğu: boyut ve overlay konumlandırma burada */
+.widget-shell {
+  position: relative;
   width: 100%;
-  /* Görünür ve rahat kullanım için dinamik yükseklik */
   height: clamp(560px, calc(100dvh - 2 * var(--page-padding)), 720px);
-  /* İsteğe bağlı görsel düzenlemeler:
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  */
-  position: relative; /* Link çubuğunu içeride konumlandırabilmek için */
 }
 
-/* Hızlı bağlantılar çubuğu */
+/* Jupiter plugin hedefi kabuğu doldursun */
+#target-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hızlı bağlantılar çubuğu - Powered by Jupiter'ın hemen üstü */
 .token-links {
   position: absolute;
   left: 12px;
   right: 12px;
-  /* Jupiter içi "Powered by Jupiter" yazısının biraz üstünde dursun diye:
-     alt boşluğu güvenli alanla birlikte ayarladık. */
-  bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--powered-offset) + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   justify-content: center;
-  z-index: 5;
-  pointer-events: none; /* Alt elemanları engellemesin */
+
+  /* iFrame üstüne gelsin */
+  z-index: 2147483647;
+
+  /* Altındaki etkileşimleri engelleme */
+  pointer-events: none;
 }
 
 /* Chip stilleri */
 .token-links .chip {
-  pointer-events: auto; /* Link ve butonlar tıklanabilir kalsın */
+  pointer-events: auto;
   appearance: none;
   -webkit-appearance: none;
   border: 1px solid rgba(var(--jupiter-plugin-primary), 0.45);
@@ -106,9 +112,8 @@ html, body {
   border-color: rgba(var(--jupiter-plugin-primary), 0.95);
 }
 
-/* Küçük ekranlarda alt boşluğu biraz artır */
+/* Küçük ekranlarda biraz daha kompakt */
 @media (max-width: 380px) {
-  .token-links {
-    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
-  }
+  :root { --powered-offset: 72px; }
+  .token-links .chip { font-size: 13px; padding: 7px 10px; }
 }
