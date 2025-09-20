@@ -10,19 +10,20 @@
   <body>
     <div class="wrap">
       <div class="container">
-        <div id="target-container"></div>
+        <!-- Widget için kabuk: overlay elemanları bu kabuğun içinde konumlanacak -->
+        <div class="widget-shell">
+          <div id="target-container"></div>
 
-        <!-- Hızlı bağlantılar: JS, bunu #target-container içine taşıyıp
-             Powered by Jupiter yazısının hemen üstünde sabitliyor -->
-        <nav id="token-links" class="token-links" aria-label="Hızlı bağlantılar" hidden>
-          <a class="chip" href="https://dexscreener.com/solana/HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz" target="_blank" rel="noopener">Dexscreener</a>
-          <a class="chip" href="https://www.dextools.io/app/en/solana/token/HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz" target="_blank" rel="noopener">DEXTools</a>
-          <a class="chip" href="https://www.dexview.com/solana/HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz" target="_blank" rel="noopener">Dexview</a>
-          <a class="chip" href="https://x.com/OppoKiss_Me" target="_blank" rel="noopener">Twitter</a>
-          <button class="chip ca" type="button" data-ca="HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz" title="CA adresini kopyala">
-            CA: HEad…17gJz
-          </button>
-        </nav>
+          <!-- Hızlı bağlantılar (DEXTools çıkarıldı) -->
+          <nav id="token-links" class="token-links" aria-label="Hızlı bağlantılar">
+            <a class="chip" href="https://dexscreener.com/solana/HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz" target="_blank" rel="noopener">Dexscreener</a>
+            <a class="chip" href="https://www.dexview.com/solana/HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz" target="_blank" rel="noopener">Dexview</a>
+            <a class="chip" href="https://x.com/OppoKiss_Me" target="_blank" rel="noopener">Twitter</a>
+            <button class="chip ca" type="button" data-ca="HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz" title="CA adresini kopyala">
+              CA: HEad…17gJz
+            </button>
+          </nav>
+        </div>
       </div>
     </div>
     <script src="./main.js"></script>
