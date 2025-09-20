@@ -1,11 +1,8 @@
-// Dexscreener grafiği için basit entegrasyon
-// Global API: window.OppoChart.setMint(<mintAddress>)
 (function () {
   const CONTAINER_ID = "dex-chart";
   const BASE = "https://dexscreener.com";
   const CHAIN = "solana";
 
-  // Grafiğin görünümü için embed query (tema/trades/info/interval ayarları)
   const EMBED_QUERY = "embed=1&theme=dark&trades=0&info=0&interval=15";
 
   let currentMint = null;
@@ -21,9 +18,7 @@
   }
 
   function buildCandidateUrls(mint) {
-    // 1) Token sayfası (birden çok havuzu toparlar)
     const tokenUrl = `${BASE}/${CHAIN}/tokens/${mint}?${EMBED_QUERY}`;
-    // 2) Bazı durumlarda doğrudan <chain>/<mint> de çalışır
     const fallbackUrl = `${BASE}/${CHAIN}/${mint}?${EMBED_QUERY}`;
     return [tokenUrl, fallbackUrl];
   }
@@ -42,15 +37,10 @@
       iframe.src = urls[idx++];
     };
 
-    // İlk başarılı load'da placeholder'ı temizlemek için
     iframe.addEventListener("load", function handleLoad() {
       try {
         onFirstLoad && onFirstLoad();
-      } catch (e) {
-        // yut
-      }
-      // Not: 404/boş içeriği cross-origin tespit etmek zor, bu yüzden tek load'ta başarılı sayıyoruz.
-      // Eğer ilk URL çalışmazsa (ağ hatası vb.), error event'i tetiklenirse fallback deneriz.
+      } catch (e) {}
       iframe.removeEventListener("error", handleError);
     });
 
@@ -74,17 +64,14 @@
       return;
     }
     if (mint === currentMint && iframeEl) {
-      // Aynı token ise tekrar yükleme
       return;
     }
     currentMint = mint;
 
-    // İçeriği temizle, placeholder ekle
     mount.innerHTML = "";
     const placeholder = renderPlaceholder("Grafik yükleniyor…");
     mount.appendChild(placeholder);
 
-    // Iframe oluştur
     const iframe = document.createElement("iframe");
     iframe.className = "chart-iframe";
     iframe.setAttribute("loading", "lazy");
@@ -92,7 +79,6 @@
 
     const candidates = buildCandidateUrls(mint);
     setIframeSrcWithFallback(iframe, candidates, () => {
-      // İlk yüklemede placeholder'ı kaldır
       placeholder.remove?.();
     });
 
@@ -104,17 +90,13 @@
     return currentMint;
   }
 
-  // Jupiter Plugin'den gelebilecek postMessage olaylarına karşı "best-effort" dinleyici.
-  // Şekli garanti değil; güvenli şekilde denenir, çalışmazsa sessizce yok sayılır.
   window.addEventListener("message", (event) => {
     try {
-      // Güvenlik: yalnızca jup.ag kaynaklarından gelen mesajları ele al
       if (typeof event.origin === "string" && !event.origin.includes("jup.ag")) return;
 
       const d = event.data;
       if (!d || typeof d !== "object") return;
 
-      // Muhtemel alan isimleri: outputMint, form.outputMint, state.form.outputMint
       const maybeMint =
         d.outputMint ||
         (d.form && d.form.outputMint) ||
@@ -123,12 +105,9 @@
       if (typeof maybeMint === "string" && maybeMint.length > 30) {
         setMint(maybeMint);
       }
-    } catch {
-      // yut
-    }
+    } catch {}
   });
 
-  // Küresel API
   window.OppoChart = {
     setMint,
     getMint,
