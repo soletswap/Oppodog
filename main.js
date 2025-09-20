@@ -18,25 +18,22 @@ window.addEventListener("load", function () {
     },
   });
 
-  // CA kopyalama ve kısaltma
+  // CA kopyalama (tam metni koru)
   const bar = document.getElementById("token-links");
   const caBtn = bar?.querySelector(".chip.ca");
   if (caBtn) {
     const ca = caBtn.getAttribute("data-ca") || "";
-    if (ca && ca.length > 12) {
-      caBtn.textContent = `CA: ${ca.slice(0, 4)}…${ca.slice(-4)}`;
-    }
     caBtn.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(ca);
-        caBtn.classList.add("copied");
         const prev = caBtn.textContent;
+        caBtn.classList.add("copied");
         caBtn.textContent = "Copied!";
         setTimeout(() => {
-          caBtn.textContent = prev || `CA: ${ca.slice(0, 4)}…${ca.slice(-4)}`;
+          caBtn.textContent = prev || `CA: ${ca}`;
           caBtn.classList.remove("copied");
         }, 1200);
-      } catch (_) {
+      } catch {
         // sessiz geç
       }
     });
