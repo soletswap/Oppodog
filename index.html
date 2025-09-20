@@ -5,19 +5,36 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Oppodog</title>
     <!-- Grafik stilleri -->
-    <link rel="stylesheet" href="./grafik/chart.css" />
+    <link rel="stylesheet" href="./grafik/chart.css?v=1.1.0" />
+    <style>
+      /* Widget yüklenirken alanın çökmesini önle */
+      #jupiter-terminal { min-height: 360px; }
+    </style>
   </head>
   <body>
-    <!-- JUPITER WIDGET (orijinal embed; değiştirmeyin) -->
+    <!-- JUPITER WIDGET -->
     <div id="jupiter-terminal"></div>
-    <script src="https://terminal.jup.ag/main-v2.js"></script>
+    <!-- Rocket Loader vb. optimizasyonların sırasını bozmaması için -->
+    <script src="https://terminal.jup.ag/main-v2.js" data-cfasync="false"></script>
     <script>
-      window.Jupiter.init({
-        displayMode: "integrated",
-        container: "#jupiter-terminal"
-        // Not: Jupiter widget kodunu değiştirmeyin. Gerekirse kendi
-        // endpoint veya formProps değerlerinizi burada ekleyebilirsiniz.
-      });
+      // Jupiter script'i gerçekten yüklendiğinde güvenli init
+      (function initJupiterSafely() {
+        if (window.Jupiter && typeof window.Jupiter.init === 'function') {
+          try {
+            window.Jupiter.init({
+              displayMode: "integrated",
+              // Her iki parametreyi de vererek uyumluluğu garanti altına alıyoruz
+              container: "#jupiter-terminal",
+              integratedTargetId: "jupiter-terminal"
+              // Gerekirse endpoint/formProps vb. ekleyebilirsin
+            });
+          } catch (e) {
+            setTimeout(initJupiterSafely, 120);
+          }
+        } else {
+          setTimeout(initJupiterSafely, 80);
+        }
+      })();
     </script>
 
     <!-- DexScreener grafiği (Jupiter seçimlerine göre otomatik güncellenir) -->
@@ -25,9 +42,9 @@
       <div class="chart-placeholder">Grafik yükleniyor…</div>
     </section>
 
-    <!-- Grafik mantığı (Jupiter’a dokunmadan, postMessage ile dinler) -->
-    <script src="./grafik/chart.js"></script>
-    <!-- Projenizin genel JS’i (isteğe bağlı) -->
-    <script src="./main.js"></script>
+    <!-- Grafik mantığı (postMessage ile Jupiter’dan mint yakalar) -->
+    <script src="./grafik/chart.js?v=1.1.0"></script>
+    <!-- Projenin genel JS’i (isteğe bağlı) -->
+    <script src="./main.js?v=1.1.0"></script>
   </body>
 </html>
