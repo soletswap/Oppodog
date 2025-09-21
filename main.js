@@ -1,3 +1,15 @@
+// Phantom in-app browser tespiti ve sınıf ekleme (erken çalışsın)
+(function detectPhantom() {
+  try {
+    const ua = navigator.userAgent || "";
+    const isPhantomUA = /\bPhantom(App)?\b/i.test(ua);
+    const isPhantomProvider = typeof window !== "undefined" && !!(window.solana && window.solana.isPhantom);
+    if (isPhantomUA || isPhantomProvider) {
+      document.documentElement.classList.add("phantom-app");
+    }
+  } catch (_) {}
+})();
+
 window.addEventListener("load", function () {
   if (!window.Jupiter || typeof window.Jupiter.init !== "function") return;
 
