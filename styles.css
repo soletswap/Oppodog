@@ -5,23 +5,24 @@
   --jupiter-plugin-interactive: 20, 38, 58;
   --jupiter-plugin-module: 16, 24, 33;
 
+  /* Otomatik yerleşim: merkez + maksimum genişlik */
   --widget-max-width: 420px;
   --page-padding: 16px;
 
-  /* Yazı çerçevesi min yükseklik (değişmedi) */
+  /* Yazı çerçevesi için minimum yükseklik (widgetin parçası gibi) */
   --appendix-min-height: 3cm;
 
-  /* Widget içi yatay boşluk */
+  /* Widget içi yatay boşluk algısı (gutter) — appendix buna göre daralır */
   --widget-gutter-x: 12px;
 }
 
-/* Otomatik metin büyütmeyi kapat (özellikle Phantom/iOS) */
+/* Otomatik metin büyütmesini kapat (iOS/Phantom) */
 html, body, .widget-appendix, .token-links {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
-/* Kutu modeli */
+/* Kutu modeli: kenarlık/padding genişliğe dahildir */
 *,
 *::before,
 *::after {
@@ -56,7 +57,7 @@ html, body {
   margin-right: auto;
 }
 
-/* Widget yüksekliğine dokunma */
+/* Widget: yüksekliğe dokunmuyoruz */
 .widget-shell {
   position: relative;
   width: 100%;
@@ -70,7 +71,7 @@ html, body {
   height: 100%;
 }
 
-/* Yazı çerçevesi: widget iç boşluğuna göre daralt + ortala */
+/* Appendix: widgete göre daralt, ortala, min 3cm */
 .widget-appendix {
   width: calc(100% - (2 * var(--widget-gutter-x)));
   max-width: calc(var(--widget-max-width) - (2 * var(--widget-gutter-x)));
@@ -82,7 +83,6 @@ html, body {
   border-top: 1px solid rgba(var(--jupiter-plugin-primary), 0.25);
   border-radius: 0 0 12px 12px;
   min-height: var(--appendix-min-height);
-  margin-top: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,40 +101,20 @@ html, body {
   width: 100%;
 }
 
-/* TÜM chip’ler için aynı font boyutu */
 .token-links .chip {
   display: inline-flex;
   align-items: center;
-  appearance: none;
-  -webkit-appearance: none;
   border: 1px solid rgba(var(--jupiter-plugin-primary), 0.45);
   background: rgba(var(--jupiter-plugin-module), 0.9);
   color: rgb(var(--jupiter-plugin-primary-text));
   border-radius: 9999px;
   padding: 7px 10px;
-  font-size: 13px;     /* TEK boyut */
-  line-height: 1.2;    /* okunaklı */
+  font-size: 13px;   /* tek boy */
+  line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
   transition: background .2s ease, border-color .2s ease, transform .05s ease;
-  white-space: nowrap; /* varsayılan: tek satır */
-}
-
-/* CA: aynı font; uzun olduğu için sarılsın ki taşma olmasın */
-.token-links .chip.ca {
-  order: 2;
-  flex: 0 0 100%;
-  justify-content: center;
-  border-color: rgba(var(--jupiter-plugin-primary), 0.75);
-
-  white-space: normal;     /* sarılsın */
-  word-break: break-all;   /* adres satır içinde kırılabilsin */
-  text-align: center;
-}
-
-/* Üst satır linkler */
-.token-links .chip:not(.ca) {
-  order: 1;
+  white-space: nowrap;
 }
 
 .token-links .chip:hover {
@@ -146,12 +126,28 @@ html, body {
   transform: translateY(1px);
 }
 
+/* Üst satır linkler */
+.token-links .chip:not(.ca) {
+  order: 1;
+}
+
+/* CA: alt satır, ortalı ve tam satır; uzunluk taşmasın diye sarılsın */
+.token-links .chip.ca {
+  order: 2;
+  flex: 0 0 100%;
+  justify-content: center;
+  border-color: rgba(var(--jupiter-plugin-primary), 0.75);
+  white-space: normal;
+  word-break: break-all;
+  text-align: center;
+}
+
 .token-links .chip.ca.copied {
   background: rgba(var(--jupiter-plugin-primary), 0.25);
   border-color: rgba(var(--jupiter-plugin-primary), 0.95);
 }
 
-/* Dar ekran uyumu: hizayı koru */
+/* Dar ekran uyumu */
 @media (max-width: 380px) {
   :root { --widget-gutter-x: 10px; }
 }
