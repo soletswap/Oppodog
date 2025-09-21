@@ -5,15 +5,18 @@
   --jupiter-plugin-interactive: 20, 38, 58;
   --jupiter-plugin-module: 16, 24, 33;
 
-  /* Maks. widget genişliği (otomatik yerleşim + merkez) */
+  /* Maks. widget genişliği (otomatik yerleşim) */
   --widget-max-width: 420px;
   --page-padding: 16px;
 
-  /* Alt bölümün zorunlu yüksekliği (yazılar widgetın parçası gibi) */
+  /* Yazı çerçevesi için minimum yükseklik (dokunmuyoruz) */
   --appendix-min-height: 3cm;
+
+  /* Widget içi yatay boşluk algısı (gutter) — yazı çerçevesini buna göre daraltıyoruz */
+  --widget-gutter-x: 12px;
 }
 
-/* Kutu modeli: kenarlık/padding genişliğe dahildir => yanlardan taşma/kayma olmaz */
+/* Kutu modeli sabit: taşmaları önler */
 *,
 *::before,
 *::after {
@@ -28,8 +31,6 @@ html, body {
   min-height: 100%;
   height: 100%;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-
-  /* Olası 1-2px taşmaları gizle (artık box-sizing ile taşma beklenmez ama emniyet) */
   overflow-x: hidden;
 }
 
@@ -45,7 +46,7 @@ html, body {
 
 .container {
   width: 100%;
-  max-width: var(--widget-max-width); /* otomatik sığ + merkez */
+  max-width: var(--widget-max-width);
   margin-left: auto;
   margin-right: auto;
 }
@@ -53,7 +54,7 @@ html, body {
 .widget-shell {
   position: relative;
   width: 100%;
-  /* YÜKSEKLİĞE DOKUNMADIM (aynı kalsın) */
+  /* Yüksekliğe dokunmuyoruz */
   height: clamp(560px, calc(100dvh - 2 * var(--page-padding)), 720px);
 }
 
@@ -64,13 +65,18 @@ html, body {
   height: 100%;
 }
 
-/* Alt bölüm: widgetın bir parçası gibi görünür, en az 3 cm */
+/* Yazılar: widget’ın parçası gibi, genişlik widget iç boşluğuna uyumlu */
 .widget-appendix {
-  width: 100%;
+  /* Widget’ın 12px iç boşluk algısına göre daralt ve ortala */
+  width: calc(100% - (2 * var(--widget-gutter-x)));
+  max-width: calc(var(--widget-max-width) - (2 * var(--widget-gutter-x)));
+  margin-left: auto;
+  margin-right: auto;
+
   background: rgba(var(--jupiter-plugin-module), 0.85);
   border: 1px solid rgba(var(--jupiter-plugin-primary), 0.12);
   border-top: 1px solid rgba(var(--jupiter-plugin-primary), 0.25);
-  border-radius: 0 0 14px 14px;
+  border-radius: 0 0 12px 12px; /* widget ile hizalı görünüm */
   min-height: var(--appendix-min-height);
   margin-top: 0;
   display: flex;
@@ -78,6 +84,7 @@ html, body {
   justify-content: center;
   padding: 10px 10px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  overflow: hidden; /* yuvarlatılmış köşelerde taşma olmasın */
 }
 
 /* Linkler */
@@ -137,8 +144,10 @@ html, body {
   border-color: rgba(var(--jupiter-plugin-primary), 0.95);
 }
 
-/* Çok dar ekranlarda küçük düzeltmeler */
+/* Dar ekran uyumu */
 @media (max-width: 380px) {
+  /* Gerekirse iç boşluğu biraz azaltarak hizayı koru */
+  :root { --widget-gutter-x: 10px; }
   .token-links .chip { font-size: 13px; }
   .token-links .chip.ca { font-size: 12.4px; }
 }
