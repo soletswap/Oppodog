@@ -8,18 +8,8 @@
   --widget-max-width: 420px;
   --page-padding: 16px;
 
-  /* Powered by Jupiter’ın ÜSTÜNE gelecek offset (normal tarayıcılar için) */
-  --powered-offset: 92px;
-
-  /* Phantom’a özel ilave değerler (varsayılan: 0) */
-  --phantom-extra-height: 0px; /* widget yüksekliğine eklenecek */
-  --phantom-extra-offset: 0px; /* link barın alt boşluğuna eklenecek */
-}
-
-/* Phantom in-app browser algılanınca html’e bu sınıf eklenir */
-.phantom-app {
-  --phantom-extra-height: 3cm;  /* widget yüksekliğini +3 cm arttır */
-  --phantom-extra-offset: 3cm;  /* link barı Powered’dan +3 cm daha yukarı taşı */
+  /* Alt bölümün zorunlu yüksekliği: 3 cm */
+  --appendix-min-height: 3cm;
 }
 
 html, body {
@@ -49,14 +39,11 @@ html, body {
   margin: 0 auto;
 }
 
+/* Widget kabuğu: yalnızca Jupiter iFrame’i taşır */
 .widget-shell {
   position: relative;
   width: 100%;
-  /* Temel yükseklik (clamp) + Phantom için ilave yükseklik */
-  height: calc(
-    clamp(560px, calc(100dvh - 2 * var(--page-padding)), 720px)
-    + var(--phantom-extra-height)
-  );
+  height: clamp(560px, calc(100dvh - 2 * var(--page-padding)), 720px);
 }
 
 #target-container {
@@ -66,33 +53,37 @@ html, body {
   height: 100%;
 }
 
-/* Link bar: üst satır linkler, alt satır CA */
+/* Alt bölüm: widgetin parçası gibi görünür, en az 3 cm */
+.widget-appendix {
+  background: rgba(var(--jupiter-plugin-module), 0.85);
+  border: 1px solid rgba(var(--jupiter-plugin-primary), 0.12);
+  border-top: 1px solid rgba(var(--jupiter-plugin-primary), 0.25);
+  border-radius: 0 0 14px 14px; /* widget ile bütünleşik görünüm */
+  min-height: var(--appendix-min-height);
+  margin-top: 0; /* widgetın hemen altı */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 10px; /* içerik nefes alsın */
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Linkler */
 .token-links {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  /* Phantom’da alt boşluğa +3cm eklenir */
-  bottom: calc(
-    var(--powered-offset) + var(--phantom-extra-offset) + env(safe-area-inset-bottom, 0px)
-  );
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   column-gap: 8px;
   row-gap: 8px;
-
-  z-index: 2147483647;   /* iFrame üstünde */
-  pointer-events: none;  /* alt öğeleri engelleme */
 }
 
 .token-links .chip {
-  pointer-events: auto;
   display: inline-flex;
   align-items: center;
   appearance: none;
   -webkit-appearance: none;
   border: 1px solid rgba(var(--jupiter-plugin-primary), 0.45);
-  background: rgba(var(--jupiter-plugin-module), 0.85);
+  background: rgba(var(--jupiter-plugin-module), 0.9);
   color: rgb(var(--jupiter-plugin-primary-text));
   border-radius: 9999px;
   padding: 7px 10px;
@@ -104,20 +95,6 @@ html, body {
   white-space: nowrap;
 }
 
-/* CA chip: alt satıra geçsin ve ortalansın */
-.token-links .chip.ca {
-  order: 2;
-  flex: 0 0 100%;
-  justify-content: center;
-  font-size: 12.8px;
-  padding: 7px 12px;
-  border-color: rgba(var(--jupiter-plugin-primary), 0.75);
-}
-
-.token-links .chip:not(.ca) {
-  order: 1; /* üst satır */
-}
-
 .token-links .chip:hover {
   background: rgba(var(--jupiter-plugin-interactive), 0.9);
   border-color: rgba(var(--jupiter-plugin-primary), 0.8);
@@ -127,14 +104,28 @@ html, body {
   transform: translateY(1px);
 }
 
+/* Üst satır linkler */
+.token-links .chip:not(.ca) {
+  order: 1;
+}
+
+/* CA: alt satır, ortalı ve tam satır */
+.token-links .chip.ca {
+  order: 2;
+  flex: 0 0 100%;
+  justify-content: center;
+  font-size: 12.8px;
+  padding: 7px 12px;
+  border-color: rgba(var(--jupiter-plugin-primary), 0.75);
+}
+
 .token-links .chip.ca.copied {
   background: rgba(var(--jupiter-plugin-primary), 0.25);
   border-color: rgba(var(--jupiter-plugin-primary), 0.95);
 }
 
-/* Çok dar ekranlarda hafif yukarı al */
+/* Çok dar ekranlarda küçük düzeltmeler */
 @media (max-width: 380px) {
-  :root { --powered-offset: 98px; }
   .token-links .chip { font-size: 13px; }
   .token-links .chip.ca { font-size: 12.4px; }
 }
