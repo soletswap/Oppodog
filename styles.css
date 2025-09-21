@@ -8,11 +8,11 @@
   --widget-max-width: 420px;
   --page-padding: 16px;
 
-  /* Powered by Jupiter’ın üstüne gelmesi için alt offset */
-  --powered-offset: 92px; /* gerekirse 84–100 px arası ayarlanabilir */
+  /* Powered by Jupiter’ın ÜSTÜNE gelecek offset */
+  --powered-offset: 92px; /* ihtiyaca göre 84–100 arası deneyebilirsin */
 
-  /* İstenilen aşağı kaydırma miktarı */
-  --downshift: 3cm; /* hepsini 3 cm aşağı kaydır */
+  /* Link/CA bloğunu aşağı kaydırma miktarı (widget hariç) */
+  --links-downshift: 3cm; /* 3 cm aşağı */
 }
 
 html, body {
@@ -42,17 +42,12 @@ html, body {
   margin: 0 auto;
 }
 
-/* Widget kabuğu: boyut ve konumlandırma */
 .widget-shell {
   position: relative;
   width: 100%;
   height: clamp(560px, calc(100dvh - 2 * var(--page-padding)), 720px);
-
-  /* Tüm bloğu 3 cm aşağı kaydır */
-  transform: translateY(var(--downshift));
 }
 
-/* Jupiter plugin hedefi kabuğu doldursun */
 #target-container {
   position: absolute;
   inset: 0;
@@ -60,7 +55,7 @@ html, body {
   height: 100%;
 }
 
-/* Link bar: üst satır linkler, alt satır CA (ortalı) */
+/* Link bar: üst satır linkler, alt satır CA */
 .token-links {
   position: absolute;
   left: 12px;
@@ -74,6 +69,10 @@ html, body {
 
   z-index: 2147483647;   /* iFrame üstünde */
   pointer-events: none;  /* alt öğeleri engelleme */
+
+  /* Sadece link/CA bloğunu 3 cm aşağı kaydır (widget sabit kalır) */
+  transform: translateY(var(--links-downshift));
+  will-change: transform;
 }
 
 .token-links .chip {
@@ -95,17 +94,18 @@ html, body {
   white-space: nowrap;
 }
 
-.token-links .chip:not(.ca) {
-  order: 1; /* üst satır */
-}
-
+/* CA chip: alt satıra geçsin ve ortalansın */
 .token-links .chip.ca {
-  order: 2;                /* alt satır */
+  order: 2;                /* altta */
   flex: 0 0 100%;          /* tam satır */
   justify-content: center; /* ortala */
-  font-size: 12.8px;
+  font-size: 12.8px;       /* mobilde sığması için hafif küçük */
   padding: 7px 12px;
   border-color: rgba(var(--jupiter-plugin-primary), 0.75);
+}
+
+.token-links .chip:not(.ca) {
+  order: 1; /* üst satır */
 }
 
 .token-links .chip:hover {
@@ -122,7 +122,7 @@ html, body {
   border-color: rgba(var(--jupiter-plugin-primary), 0.95);
 }
 
-/* Çok dar ekranlarda hafif ayar */
+/* Çok dar ekranlarda biraz daha yukarı al */
 @media (max-width: 380px) {
   :root { --powered-offset: 98px; }
   .token-links .chip { font-size: 13px; }
