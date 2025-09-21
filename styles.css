@@ -5,11 +5,19 @@
   --jupiter-plugin-interactive: 20, 38, 58;
   --jupiter-plugin-module: 16, 24, 33;
 
+  /* Maks. widget genişliği (otomatik yerleşim + merkez) */
   --widget-max-width: 420px;
   --page-padding: 16px;
 
-  /* Alt bölümün zorunlu yüksekliği: 3 cm */
+  /* Alt bölümün zorunlu yüksekliği (yazılar widgetın parçası gibi) */
   --appendix-min-height: 3cm;
+}
+
+/* Kutu modeli: kenarlık/padding genişliğe dahildir => yanlardan taşma/kayma olmaz */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html, body {
@@ -20,6 +28,8 @@ html, body {
   min-height: 100%;
   height: 100%;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+  /* Olası 1-2px taşmaları gizle (artık box-sizing ile taşma beklenmez ama emniyet) */
   overflow-x: hidden;
 }
 
@@ -27,7 +37,6 @@ html, body {
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  box-sizing: border-box;
   padding-left: calc(var(--page-padding) + env(safe-area-inset-left, 0px));
   padding-right: calc(var(--page-padding) + env(safe-area-inset-right, 0px));
   padding-top: calc(var(--page-padding) + env(safe-area-inset-top, 0px));
@@ -35,14 +44,16 @@ html, body {
 }
 
 .container {
-  width: min(100%, var(--widget-max-width));
-  margin: 0 auto;
+  width: 100%;
+  max-width: var(--widget-max-width); /* otomatik sığ + merkez */
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* Widget kabuğu: yalnızca Jupiter iFrame’i taşır */
 .widget-shell {
   position: relative;
   width: 100%;
+  /* YÜKSEKLİĞE DOKUNMADIM (aynı kalsın) */
   height: clamp(560px, calc(100dvh - 2 * var(--page-padding)), 720px);
 }
 
@@ -53,18 +64,19 @@ html, body {
   height: 100%;
 }
 
-/* Alt bölüm: widgetin parçası gibi görünür, en az 3 cm */
+/* Alt bölüm: widgetın bir parçası gibi görünür, en az 3 cm */
 .widget-appendix {
+  width: 100%;
   background: rgba(var(--jupiter-plugin-module), 0.85);
   border: 1px solid rgba(var(--jupiter-plugin-primary), 0.12);
   border-top: 1px solid rgba(var(--jupiter-plugin-primary), 0.25);
-  border-radius: 0 0 14px 14px; /* widget ile bütünleşik görünüm */
+  border-radius: 0 0 14px 14px;
   min-height: var(--appendix-min-height);
-  margin-top: 0; /* widgetın hemen altı */
+  margin-top: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 10px; /* içerik nefes alsın */
+  padding: 10px 10px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 
@@ -75,6 +87,7 @@ html, body {
   justify-content: center;
   column-gap: 8px;
   row-gap: 8px;
+  width: 100%;
 }
 
 .token-links .chip {
