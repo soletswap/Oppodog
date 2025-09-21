@@ -1,33 +1,23 @@
-// Phantom in-app browser tespiti ve sınıf ekleme (erken çalışsın)
-(function detectPhantom() {
-  try {
-    const ua = navigator.userAgent || "";
-    const isPhantomUA = /\bPhantom(App)?\b/i.test(ua);
-    const isPhantomProvider = typeof window !== "undefined" && !!(window.solana && window.solana.isPhantom);
-    if (isPhantomUA || isPhantomProvider) {
-      document.documentElement.classList.add("phantom-app");
-    }
-  } catch (_) {}
-})();
-
+// Jupiter plugin'i tek kez başlat (senin verdiğin ayarlar birebir korunuyor)
 window.addEventListener("load", function () {
   if (!window.Jupiter || typeof window.Jupiter.init !== "function") return;
+
+  // İki kez init etme hatasını önlemek için basit koruma
+  if (window.__JUP_INIT_DONE__) return;
+  window.__JUP_INIT_DONE__ = true;
 
   window.Jupiter.init({
     displayMode: "integrated",
     integratedTargetId: "target-container",
-    defaultExplorer: "Solscan",
     formProps: {
-      initialInputMint: "So11111111111111111111111111111111111111112", // SOL
-      initialOutputMint: "HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz", // OPPO
-      referralAccount: "9EvV3V9cZ4KktQ4xCnu3ymA2a9qgaBR4HLFhFddZZXSn",
-      referralFee: 100, // bps (1.00%)
+      initialInputMint: "So11111111111111111111111111111111111111112",
+      initialOutputMint: "HEadEtLjAFBGqAweLESUR2Qcjoc3U8ekQNvSUSH17gJz",
+      fixedMint: ""
     },
     branding: {
-      logoUri:
-        "https://photos.pinksale.finance/file/pinksale-logo-upload/1733923962272-6c08b5b4359a38ef4991bd3d69dc1c3d.png",
-      name: "Oppo",
-    },
+      logoUri: "https://photos.pinksale.finance/file/pinksale-logo-upload/1733923962272-6c08b5b4359a38ef4991bd3d69dc1c3d.png",
+      name: "Oppo"
+    }
   });
 
   // CA kopyalama
