@@ -18,7 +18,7 @@ window.addEventListener("load", function () {
     },
   });
 
-  // CA kopyalama (tam metni koru)
+  // CA kopyalama
   const bar = document.getElementById("token-links");
   const caBtn = bar?.querySelector(".chip.ca");
   if (caBtn) {
