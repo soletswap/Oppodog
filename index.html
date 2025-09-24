@@ -6,10 +6,38 @@
     <title>Oppo Swap</title>
     <link rel="stylesheet" href="./styles.css" />
     <script src="https://plugin.jup.ag/plugin-v1.js"></script>
+    <style>
+      .navbar-logo {
+        width: 32px;
+        height: 32px;
+        vertical-align: middle;
+        margin-right: 8px;
+        border-radius: 50%;
+      }
+      .navbar-title {
+        font-weight: bold;
+        font-size: 1.2em;
+        vertical-align: middle;
+        color: #222;
+        text-decoration: none;
+        margin-right: 18px;
+      }
+      @media (max-width: 600px) {
+        .navbar-logo { width: 24px; height: 24px; }
+        .navbar-title { font-size: 1em; }
+      }
+    </style>
   </head>
   <body>
     <div class="wrap">
       <div class="container">
+        <!-- Logo ve Site Adı Eklendi (widgete dokunulmadı) -->
+        <div style="margin-bottom: 12px;">
+          <a href="/" class="navbar-title">
+            <img src="https://photos.pinksale.finance/file/pinksale-logo-upload/1733923962272-6c08b5b4359a38ef4991bd3d69dc1c3d.png" alt="OppoDog Logo" class="navbar-logo" />
+            Oppo Swap
+          </a>
+        </div>
         <!-- Jupiter widget (dokunmadık) -->
         <div class="widget-shell">
           <div id="target-container"></div>
